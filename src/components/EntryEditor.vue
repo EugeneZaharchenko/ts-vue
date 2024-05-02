@@ -3,17 +3,17 @@ import EmojiField from "@/components/EmojiField.vue";
 import ArrowCircleRight from "@/assets/icons/arrow-circle-right.svg";
 import {ref, computed} from 'vue';
 import type Emoji from '@/types/Emoji'
+import Entry from "@/types/Entry";
 // import type Ref from 'vue'
 
-const text = ref('AnyVal');
+const body = ref('AnyVal');
 const emoji = ref<Emoji | null>(null);
-// emoji.value = 'asdf'
-const charCount = computed<number>(() => text.value.length)
+const charCount = computed<number>(() => body.value.length)
 const maxChars = 280;
 
 // events
 defineEmits<{
-  (e: '@create', entry: {text: string, emoji: Emoji | null}): void;
+  (e: '@create', entry: Entry): void;
 }>();
 // (['@create'])
 
@@ -21,16 +21,22 @@ defineEmits<{
 const handleTextInput = (e: Event) => {
   const textarea = e.target as HTMLTextAreaElement
   if (textarea.value.length < maxChars) {
-    text.value = textarea.value
+    body.value = textarea.value
   } else {
-    text.value = textarea.value = textarea.value.substring(0, maxChars)
+    body.value = textarea.value = textarea.value.substring(0, maxChars)
   }
 }
 </script>
 
 <template>
-  <form class="entry-form" @submit.prevent="$emit('@create', {text, emoji})">
-    <textarea :value="text"
+  <form class="entry-form" @submit.prevent="$emit('@create', 
+  { userId: 1,
+    body:body,
+    emoji:emoji,
+    createdAt: new Date(),
+    id: Math.random()
+    })">
+    <textarea :value="body"
     @keyup="handleTextInput" placeholder="Новий журнал for Eugene_Z"></textarea>
     <EmojiField v-model="emoji" />
     <div class="entry-form-footer">
